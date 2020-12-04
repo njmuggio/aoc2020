@@ -1,5 +1,9 @@
 #!/bin/bash
 
+title="$1"
+shift
+title="$title: $*"
+
 times=()
 
 function total {
@@ -56,11 +60,17 @@ bw=$(bc -l <<< "scale = 10; ($max - $min) / 10")
 col=${times[*]}
 tmp=$(mktemp)
 echo -e "${col// /\\n}" > $tmp
-gnuplot <<< "binwidth=$bw
+gnuplot -p <<< "binwidth=$bw
 bin(x,width)=width*floor(x/width)
 set boxwidth binwidth
-set term dumb 120 31
+#set term dumb 120 31
+set term png size 640,480 font 'Monospace,10'
+set output 'hist.png'
 unset key
+set style fill solid border
+set ylabel 'Runs'
+set xlabel 'Seconds'
+set title '$title'
 plot '$tmp' using (bin(\$1,binwidth)):(1.0) smooth freq with boxes
 "
 rm $tmp
