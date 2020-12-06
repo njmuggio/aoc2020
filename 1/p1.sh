@@ -1,3 +1,17 @@
 #!/bin/bash
 
-sort -h input | xargs -I%% awk -v LVAL=%% '{if($0 + LVAL == 2020){print LVAL * $0}}' input
+arr=()
+
+while IFS= read -r line
+do
+	for i in ${arr[@]}
+	do
+		if ((i + line == 2020))
+		then
+			echo $((i * line))
+			exit
+		fi
+	done
+
+	arr+=($line)
+done < input

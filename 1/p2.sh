@@ -1,3 +1,20 @@
 #!/bin/bash
 
-cat input | xargs -I% sed -e 's/$/ %/' input | xargs -I% sed -e 's/$/ %/' input | awk '{if($1 + $2 + $3 == 2020){print $1 * $2 * $3}}'
+arr=()
+
+while IFS= read -r line
+do
+	for i in ${arr[@]}
+	do
+		for j in ${arr[@]}
+		do
+			if ((i + j + line == 2020))
+			then
+				echo $((i * j * line))
+				exit
+			fi
+		done
+	done
+
+	arr+=($line)
+done < input
