@@ -18,7 +18,7 @@ function run {
 }
 
 TIMEFORMAT='%3R'
-while [[ ${#times[@]} -lt 5 ]] || (($(bc <<< "$(total) < 5.0")))
+while [[ ${#times[@]} -lt 30 ]] || (($(bc <<< "$(total) < 5.0")))
 do
 	run "$@"
 done
