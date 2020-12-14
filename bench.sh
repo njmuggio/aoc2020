@@ -7,18 +7,29 @@ title="$title: $*"
 times=()
 
 function total {
-	cmd=${times[*]}
-	cmd=${cmd// /+}
-	bc <<< "scale = 10; $cmd"
+	if ((${#times[@]} == 0))
+	then
+		echo '0'
+	else
+		cmd=${times[*]}
+		cmd=${cmd// /+}
+		bc <<< "scale = 10; $cmd"
+	fi
 }
 
 function run {
-	t=$((time "$@" > /dev/null) 2>&1)
+	t=$( (time "$@" > /dev/null) 2>&1)
 	times+=($t)
 }
 
+function int_total {
+	t=$(total)
+	t="${t%.*}"
+	echo "${t:-0}"
+}
+
 TIMEFORMAT='%3R'
-while [[ ${#times[@]} -lt 30 ]] || (($(bc <<< "$(total) < 5.0")))
+while (((${#times[@]} < 30 && $(int_total) < 600) || $(int_total) < 5))
 do
 	run "$@"
 done
